@@ -14,3 +14,6 @@
 | July 30  |  Intro to Web Scraping |
 | August 6  |  Text Mining |
 | August 13  |  Intro to Supervised Machine Learning in R|
+
+
+** Tutorial topics are tentative and may be adjusted based on interests of the group. This page will be updated to reflect any changes. All workshop material will also be posted and linked here before the weekly session.  
