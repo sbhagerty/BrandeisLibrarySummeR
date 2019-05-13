@@ -10,7 +10,7 @@ Please use the registration links below to sign up. Tuesday and Thursday session
 
 |  Week Of | Tutorial Topic   | |   |
 |---|---|---|---|
-| May 28  |  Introduction to the Tidyverse | [Tuesday Registration](https://calendar.library.brandeis.edu/calendar/workshops/SummeRofR)| [Thursday Registration](https://calendar.library.brandeis.edu/event/5412499)   |
+| May 28  |  Introduction to R and the Tidyverse | [Tuesday Registration](https://calendar.library.brandeis.edu/calendar/workshops/SummeRofR)| [Thursday Registration](https://calendar.library.brandeis.edu/event/5412499)   |
 | June 4  |  Data visualization with ggplot |  [Tuesday Registration](https://calendar.library.brandeis.edu/event/5412567)| [Thursday Registration](https://calendar.library.brandeis.edu/event/5412578)   |
 | June 11  |  Data wrangling: Part 1  | [Tuesday Registration](https://calendar.library.brandeis.edu/event/5412568)| [Thursday Registration](https://calendar.library.brandeis.edu/event/5412579)   |
 | June 18  |  Data wrangling: Part 2    | [Tuesday Registration](https://calendar.library.brandeis.edu/event/5412569)| [Thursday Registration](https://calendar.library.brandeis.edu/event/5412580)   |
