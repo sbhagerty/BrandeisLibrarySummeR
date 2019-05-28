@@ -7,12 +7,16 @@ output: pdf_document
 
 **Who we are**
 
-Margarita Corral 
-mcorral@brandeis.edu
+Margarita Corral  
+
+mcorral@brandeis.edu  
+
 [Make an appointment with Margarita!](https://calendar.library.brandeis.edu/appointment/8518)
 
-Shannon Hagerty 
-shannonhagerty@brandeis.edu
+Shannon Hagerty  
+
+shannonhagerty@brandeis.edu  
+
 [Make an appointment with Shannon!](https://calendar.library.brandeis.edu/appointment/50509)
 
 ### What is R and the tidyverse? 
@@ -280,35 +284,35 @@ If you look closely at the graph we can see we have all three countries happines
 US_and_neighbors<- filter(world_happiness, Country %in% c("United States", "Mexico", "Canada"), Year >2007)
 ```
 Since we're only insterested in the Happiness_score, Year, and Country we may want to just pull out these columns.  We can use the select() function to do this. Inside the parentheses of select we have to first name the dataframe we want to select from, then name the columns we want.  
-```{r select}
+```{r select US and neighbors}
 US_and_neighbors <- select(US_and_neighbors, Country, Year, Happiness_score) 
 ```
 Let's check out what the final dataframe looks like
-```{r}
+```{r Check US and neighbors}
 US_and_neighbors
 ```
 
 
 That looks like what we want. Let's just recap the steps we took to get there.  We had the world_happiness dataframe and then we filtered for the rows and created US_and_neighbors dataframe and then we selected from US_and_neighbors the columns we wanted and we *overwrote* the old US_and_neighbors dataframe with the one that only had the columns we wanted. It looked like this:
-```{r}
+```{r US and Neighbors step overview}
 US_and_neighbors<- filter(world_happiness, Country %in% c("United States", "Mexico", "Canada"), Year >2007)
 US_and_neighbors <- select(US_and_neighbors, Country, Year, Happiness_score) 
 ```
 
 A faster way to write this (and I think also a way that is more readable) is to use chaining.  The tidyverse has a pipe operator %>%  which is like saying the words 'and then'. Recap of above: We had the world_happiness dataframe **and then** we filtered for the rows and created US_and_neighbors dataframe **and then** we selected from US_and_neighbors the columns we wanted.
 
-```{r}
+```{r US and neighbors with chaining}
 US_and_neighbors<- world_happiness%>% filter(Country %in% c("United States", "Mexico", "Canada"), Year >2007) %>% select(Country, Year, Happiness_score)
 ```
 Note that we no longer have to put the dataframe name inside filter() or select() because when the pipe operator  Print the dataframe and confirm this produced what we think it should.  
-```{r}
+```{r print US and neighbors}
 US_and_neighbors
 ```
 
 ##### Group By and Summarise 
 
 We have ten years of data for three countries.  We may want to calculate the decadal average happiness for each country.  
-```{r}
+```{r group_by and summarise}
 US_and_neighbors %>% group_by(Country)%>% summarise(avg_happiness=mean(Happiness_score))
 ```  
 
@@ -326,33 +330,33 @@ US_and_neighbors %>% group_by(Country)%>% summarise(avg_happiness=mean(Happiness
 It seems to me that government confidence and perception of corruption should be related. A higher score (closer to 1) indicates more confidence / perception of corruption.  Seemingly these should be negatively correlated.  I want to see this relationship and compare it between the UK, the US, and Germany. 
 
 1. First things first we want to filter the data for the three countries we're interested in.  
-```{r}
+```{r hackyhour1}
 #Create a variable that is the filtered world happiness data where Country is %in% the list c('United Kingdom', 'Germany', 'United States')
 ```
 2. Let's make the plot! We want x axis to be perception of corruption and the y axis to be government confidence 
-```{r}
+```{r hackyhour2}
 #ggplot(data = WHATEVER YOU CALLED THE VARIABLE IN PREVIOUS STEP) + geom_point(mappings = aes(x=COLUMN_NAME, y=COLUMN_NAME, color = COLUMN_NAME))
 ```
 Interesting it looks like the US loses confidence in the government more quickly when people perceive corruption. Next let's clean the graph up a little. Improve the x label and y label. 
-```{r}
+```{r hackyhour3}
 #Same code as above but add +xlab('YOUR LABEL HERE') and +ylab('YOUR LABEL HERE')
 ```
  
 3. Let's check the trends of government confidence and perception of corruption for the the three countries over time. First government confidence
-```{r}
+```{r hackyhour4}
 #make a plot where x is 
 ```
 And now perception of corruption over time
-```{r}
+```{r hackyhour5}
 #code here
 ```
 4. Can we get the mean values of corruption and government confidence for each of the three countries? 
-```{r}
+```{r hackyhour6}
 #YOUR DATAFRAME %>% group_by(Country) %>% summarise(avg_corruption_perception= mean(Perception_corruption), avg_gov_confidence= mean(Government_confidence)
 
 ```
 5. What if we wanted to see how the trends were changing over time for corruption perception and goverment confidence, and we wanted the average of the three countries for each measurement for each year. Can you adapt the code you wrote above to make this happen?
-```{r}
+```{r hackyhour7}
 #your code here
 ```
 
