@@ -1,0 +1,188 @@
+---
+title: "Data visualization with ggplot"
+output: pdf_document
+---
+### Welcome to SummeR of R at the Brandeis Library! 
+
+**Who we are**
+
+Margarita Corral  
+
+mcorral@brandeis.edu  
+
+[Make an appointment with Margarita!](https://calendar.library.brandeis.edu/appointment/8518)  
+  
+  
+
+Shannon Hagerty  
+
+shannonhagerty@brandeis.edu  
+
+[Make an appointment with Shannon!](https://calendar.library.brandeis.edu/appointment/50509)
+
+### What is ggplot2? 
+
+* ggplot2 is a visualization package part of tidyverse. 
+
+* ggplot2 follows the Grammar of Graphics (GoG) [Create elegant data visualizations using the grammar of graphics, ggplot2]  (https://ggplot2.tidyverse.org/)
+
+* The idea is to build graphs from the following components: 
+
+![](grammarofgraphics.png) 
+
+Image from *The Grammar of Graphics by Leland Wilkinson*
+
+* Check out the https://www.rstudio.com/resources/cheatsheets/#ggplot2
+
+
+### Arguments for ggplot2 funtions:
+* Aesthetics (Visual properties of the objects in your plot, e.g. size, shape, color, patern, fill of variables, alpha)
+* Geoms (Geometric objects representing data, lines, bars, points)
+* Facets (subgroups)
+* Statistics (additional functions like regression lines)
+* Scales (legends and labels)
+* Coordinate System (Cartesian, polar..)
+* Themes (Background)
+
+
+## Let's install/load tidyverse!
+
+The very first time you want to use a package you first need to install it.  
+```{r}
+# if you have never downloaded tidyverse uncomment the line below and run to install it
+#install.packages('tidyverse')
+```
+
+Load tidyverse
+```{r load_tidyverse}
+library(tidyverse)
+```
+
+
+#### Let's learn ggplot2 with some wine  
+  
+* [TidyTuesday](https://github.com/rfordatascience/tidytuesday): 
+
+* We will use last week's dataset. We can use this line of code to read in the  data from the github page. 
+
+```{r load wine csv file}
+wine_ratings <- read_csv('WineRatings.csv')
+```
+
+We use the View function to look at your dataframe and check that we have tidy data (each variable is a column and each observation is a row)
+```{r view data, eval=FALSE}
+View(wine_ratings)
+```
+
+We can delete X1.
+```{r delete column}
+wine_ratings<-select(wine_ratings, -X1)
+```
+
+Let's create a few graphs using ggplot2.
+```{r The first layer is the data} 
+ggplot(data=wine_ratings)
+```
+
+
+Now we need to add aesthetics and geometric objects.
+aes is what you plot (point, line, bar, boxplot), and geoms are how you plot aes (y, x, size, color, fill, shape
+specify aes() inside each geom_() so that we know which aes correspond to each geoms
+
+```{r Adding geom() and aes()} 
+ggplot(data=wine_ratings)+
+  geom_point(aes(x=points,
+                 y=price))
+```
+
+I am going to create a new data frame to compare Spain and the U.S. We will focus on cheap wine
+```{r Creating a new data frame for Spain and the United Staets}
+
+Spain_and_US<- filter(wine_ratings, country %in% c("US","Spain"), price<500)
+```
+
+Let's add facets
+```{r Adding geom_() and aes()} 
+ggplot(data=Spain_and_US)+
+  geom_point(aes(x=points,
+                 y=price))+
+  facet_wrap(~country)
+```
+
+Let's add a stat layer
+```{r Adding a regression line} 
+ggplot(data=Spain_and_US)+
+  geom_point(aes(x=points,
+                 y=price))+
+  facet_wrap(~country)+
+  stat_smooth(aes(x=points, y=price), method="lm", formula = y ~ x)
+```
+
+
+```{r another way to do the same}
+p<-ggplot(Spain_and_US, aes(x=points, y=price))+geom_point()+facet_grid(~country)
+
+p+stat_smooth(method="lm", formula = y ~ x)
+
+  
+  
+```
+
+
+
+
+Changing the theme
+```{r Changing the theme} 
+ggplot(data=Spain_and_US)+
+  geom_point(aes(x=points,
+                 y=price, color=country))+
+  theme_minimal()
+
+                 
+```
+
+
+
+
+Adding Labels
+```{r adding adding labels}
+ggplot(data=Spain_and_US)+
+  geom_point(aes(x=points,
+                 y=price, color=country))+
+  theme_minimal()+
+  labs(title = "Wine Scores and Price",
+       x="Expert Scores",
+       y= "Price")
+```
+
+
+Changing Legends
+```{r Legends}
+ggplot(data=Spain_and_US)+
+  geom_point(aes(x=points,
+                 y=price, color=country))+
+  theme_minimal()+
+  labs(title = "Wine Scores and Price",
+       x="Score",
+       y= "Price")+
+  scale_color_discrete(name="Country", labels= c("Spain", "United States"))
+
+```
+
+
+
+If you would like to play with other themes, try the ggthemes package!
+```install.packages('ggthemes')```
+```library(ggthemes)```
+```+theme_tufte()```
+```+theme_fivethirtyeight()```
+```+theme_economist()```
+```+theme_wsj()```
+```+theme_solarized()```
+
+* [TidyTuesday](https://github.com/rfordatascience/tidytuesday): 
+  * This week is Ramen Ratings data. #TidyTuesday Twitter 
+```{r #TidyTuesday}
+ramen_ratings <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-06-04/ramen_ratings.csv")
+
+```
