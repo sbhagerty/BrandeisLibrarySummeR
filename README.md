@@ -12,7 +12,7 @@ Please use the registration links below to sign up. Tuesday and Thursday session
 |---|---|---|---|
 | May 28  |  [Introduction to R and the Tidyverse](Intro_R_and_Tidyverse)  | [Tuesday Registration](https://calendar.library.brandeis.edu/calendar/workshops/SummeRofR)| [Thursday Registration](https://calendar.library.brandeis.edu/event/5412499)   |
 | June 4  |  [Data visualization with ggplot](DataVisualization) |  [Tuesday Registration](https://calendar.library.brandeis.edu/event/5412567)| [Thursday Registration](https://calendar.library.brandeis.edu/event/5412578)   |
-| June 11  |  Data wrangling: Part 1  | [Tuesday Registration](https://calendar.library.brandeis.edu/event/5412568)| [Thursday Registration](https://calendar.library.brandeis.edu/event/5412579)   |
+| June 11  |  [Data wrangling: Part 1](DataWranglingPart1)  | [Tuesday Registration](https://calendar.library.brandeis.edu/event/5412568)| [Thursday Registration](https://calendar.library.brandeis.edu/event/5412579)   |
 | June 18  |  Data wrangling: Part 2    | [Tuesday Registration](https://calendar.library.brandeis.edu/event/5412569)| [Thursday Registration](https://calendar.library.brandeis.edu/event/5412580)   |
 | June 25  |  Statistical Tests/ Models: Part 1 | [Tuesday Registration](https://calendar.library.brandeis.edu/event/5412570)| [Thursday Registration](https://calendar.library.brandeis.edu/event/5412581)   |
 | July 2  |  Statistical Tests/ Models: Part 2 | [Tuesday Registration](https://calendar.library.brandeis.edu/event/5412571)| No Session Thursday (holiday)   |
