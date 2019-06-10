@@ -1,0 +1,173 @@
+---
+title: "Data Wrangling Part 1"
+output:
+  pdf_document: default
+  html_document: default
+---
+### Welcome to SummeR of R at the Brandeis Library! 
+
+
+Margarita Corral  
+
+mcorral@brandeis.edu  
+
+[Make an appointment with Margarita!](https://calendar.library.brandeis.edu/appointment/8518)  
+  
+
+Shannon Hagerty  
+
+shannonhagerty@brandeis.edu  
+
+[Make an appointment with Shannon!](https://calendar.library.brandeis.edu/appointment/50509)
+
+#### Data Wrangling Part 1: tidyr & dplyr
+
+Today we're going to be focused on getting data into a tidy format and some of the core functions in the tidyverse to transform your data! Our focus is going to be on the *tidyr* and *dplyr* packages in the tidyverse.
+
+A good guide for this material is the [Data Wrangling Cheat Sheet by RStudio](https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf)
+
+We start with loading the tidyverse (if you are new to the series you need to install the package first, delete the hashtag at line 9 to do that)
+```{r}
+#install.packages('tidyverse')
+library(tidyverse)
+```
+  
+    
+    
+##### The *tidyr* package has two main functions that are meant to help convert your data into a tidy format.  
+
+**1. gather()** 
+We use gather when we have multiple observations in one row (as opposed to tidy format with one observation in a row)
+
+Remember our Game of Thrones Untidy dataset? 
+```{r}
+Untidy_GOT<-read_csv("UntidyGOT.csv") #read in the dataframe
+print(Untidy_GOT)
+```
+We can convert this to a tidy format by using the gather function: 
+```{r}
+Tidy_GOT <- gather(Untidy_GOT, Survives, Dies, key='Outcome', value='Character', na.rm=TRUE)
+print(Tidy_GOT)
+```
+
+**2. spread()**
+We use spread when we have multiple rows for one observation. Here's an example: 
+```{r}
+UntidyHeightWeight <- read_csv('UntidyHeightWeight.csv')
+print(UntidyHeightWeight)
+```
+The key argument tells you which column in the untidy dataframe you want to be converted into column names in the tidy version, and the value is the column you want to be inside the cells of the dataframe. 
+```{r}
+TidyHeightWeight <- spread(UntidyHeightWeight, key=Measurement, value=Value)
+print(TidyHeightWeight)
+```
+
+
+##### There are 5 Main *dplyr* functions, and you already know some of them!     
+
+**1. filter()**: gets specific rows from a dataframe  
+
+**2. select()**: lets us pull out specific columns from a dataframe  
+
+**3. summarize()**: allows you to create summary statistics from columns in a dataframe.  
+
+
+**4. arrange()**: diplays the dataframe sequentially based on variables.
+```{r}
+arrange(TidyHeightWeight, Height)
+```
+```{r}
+arrange(TidyHeightWeight, desc(Weight))
+```
+**4. mutate()**: Let's you create a new column!
+
+```{r}
+Tidy_BMI<-mutate(TidyHeightWeight, BMI = 703*Weight/ (Height)^2)
+print(Tidy_BMI)
+```
+
+
+The five main *dplyr* functions have similarities:  
+
+1. all work with ```group_by()```  
+
+2. Need the dataframe name as their first argument inside the parentheses  
+
+3. Have  additional arguments that describe what to do with dataframe  
+4. Have a new dataframe as output  
+
+- [Summarized from Ch. 3 in R for Data Science](https://search.library.brandeis.edu/permalink/f/1skfba6/TN_sbo_s9781491910382)  
+
+##### My favorite dplyr function  
+
+**case_when()** : Lets you do different things based on a condition  
+
+```{r}
+Tidy_BMI<-mutate(Tidy_BMI, Height_Class = case_when( Height > 65 ~ 'Tall', 
+                                                     Height < 65 ~ 'Short'))
+print(Tidy_BMI)
+```
+
+#### Let's try to apply some of this to this week's Tidy Tuesday 
+
+This week's tidy tuesday data set is from NASA about meteorites 
+```{r}
+meteorites <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-06-11/meteorites.csv")
+```
+
+Now let's take a look at a summary of the dataframe
+
+```{r}
+summary(meteorites)
+```
+Looks like we have some bad data, the max year is 2101, I find this suspicious. I am going to filter out anything greater than the current year.  
+```{r}
+meteorites <- filter(meteorites, year <= 2019)
+```
+
+
+Let's see how many meteorites have been found vs. fell each year 
+```{r}
+meteorite_counts <- meteorites %>% group_by(fall, year) %>% summarise(count= n())
+print(meteorite_counts)
+```
+
+So now we're considering a year an observation and we want to adjust our dataframe so that each year is on one row only.  We use the *spread()* function from *tidyr* 
+
+```{r}
+spread_meteorite<-meteorite_counts %>% spread(key=fall, value=count)
+```
+
+There are a number of years where we have a meteor that fell but none that were found, spread automatically fills this with an NA but we want to just fill it with zero because given our dataframe we will assume if there is no record there is 0 found/fallen that year. We can do this by setting the fill argument to 0 inside spread.
+
+```{r}
+spread_meteorite<-meteorite_counts %>% spread(key=fall, value=count, fill=0)
+```
+What proportion of the meteorites in each year were 'Found' as opposed to 'Fell', lets calculate this in a new column.  
+```{r}
+spread_meteorite<-spread_meteorite %>% mutate(prop_found = Found/(Fell + Found))
+spread_meteorite
+```
+Now lets plot the proportion of found meteors over time. 
+```{r}
+ggplot(data=spread_meteorite)+
+  geom_point(aes(x=year, y=prop_found), color = 'magenta')+
+  theme_classic()+
+  xlab('Year')+
+  ylab('Proportion of Meteorites Found')
+```
+It looks like things get more interesting after 1800, let's limit the x axis to be between 1800 and 2019.  
+
+```{r}
+ggplot(data=spread_meteorite)+geom_point(aes(x=year, y=prop_found), color = 'magenta')+theme_classic()+xlab('Year')+ylab('Proportion of Meteorites Found')+xlim(1800,2019)
+```
+
+###### Some ideas for your Tidy Tuesday! 
+
+- Do the classes seem to vary by mass? (maybe try a Bar graph or boxplot)
+- Is the proportion found vs. fallen different across the classes? 
+- Create a bar graph with the number of meteorites in each class (check out function top_n() to limit classes)
+- Create a graph of median and/or mean meteorite masses over the years
+- Create a histogram of the meteor masses 
+
+
