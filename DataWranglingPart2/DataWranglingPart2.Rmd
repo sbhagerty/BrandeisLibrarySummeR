@@ -1,0 +1,269 @@
+---
+title: "Data Wrangling Part 2"
+output:
+  pdf_document: default
+  html_document: default
+---
+### Welcome to SummeR of R at the Brandeis Library! 
+
+
+Margarita Corral  
+
+mcorral@brandeis.edu  
+
+[Make an appointment with Margarita!](https://calendar.library.brandeis.edu/appointment/8518)  
+  
+
+Shannon Hagerty  
+
+shannonhagerty@brandeis.edu  
+
+[Make an appointment with Shannon!](https://calendar.library.brandeis.edu/appointment/50509)
+
+#### Data Wrangling Part 2: Combining Data Sets, stringr, and lubridate
+
+## Combining Data Sets
+
+We might need to merge data sets before running our analyses. Today we will learn some of the functions in the dplyr package  that will help us combine data.
+
+Check out the [Data Wrangling Cheat Sheet by RStudio](https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf)
+
+We start with loading the tidyverse (if you are new to the series you need to install the package first, delete the hashtag at line 33 to do that)
+```{r}
+#install.packages('tidyverse')
+library(tidyverse)
+```
+
+
+There are several ways to combine data sets. We are going to focus on 3.  frames.
+
+**1. Inner Join()** 
+This function matches pairs of observations whose keys (the variable that uniquely identifies an observation)are equal. inner_join() will exclude unmatched rows.
+
+Let's see an example. We download two data sets from the World Bank, one with GDP data and another one with life expectacy for a few countries.
+
+```{r}
+gdp<-read_csv("gdp.csv") #read in the dataframe
+print(gdp)
+```
+
+
+
+```{r}
+LifeExpectancy<-read_csv("LifeExp.csv") #read in the dataframe
+print(LifeExpectancy)
+```
+
+```{r}
+LifeExp_gdp <- inner_join(gdp, LifeExpectancy, by="Country") 
+print (LifeExp_gdp)
+```
+
+**2. Full Join()** 
+What if we want to keep all observations? We can use full_join()
+
+```{r}
+LifeExp_gdp_all <- full_join(gdp, LifeExpectancy, by="Country") 
+print (LifeExp_gdp_all)
+```
+
+**3. Left Join()** 
+Another function is left_join() that keeps all observations in the first data set
+
+```{r}
+LifeExp_gdp_left <- left_join(gdp, LifeExpectancy, by="Country") 
+print (LifeExp_gdp_left)
+```
+
+
+### Working with Characters
+
+Sometimes we need to work with character strings. The package stringr has many useful functions 
+
+We can use the c() function to store character vectors
+```{r}
+days<- c("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday")
+days
+```
+or str_c()
+```{r}
+months<-str_c("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December")
+months
+```
+Let's separate them
+```{r}
+months<-str_c("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December", sep = ", ")
+months
+```
+
+String Length
+```{r}
+str_length(days)
+
+str_length(months)
+
+str_length("banana")
+```
+Subsetting Strings
+```{r}
+str_sub(days, 1,3) #str_sub(string, start = 1L, end = -1L)
+```
+Negative numbers will count backwards from the end
+```{r}
+str_sub(days, -3, -1)
+```
+Return a pattern
+```{r}
+str_subset(days, "m")
+```
+
+
+Mutating strings (str_to_lower, str_to_upper, str_to_title)
+```{r}
+days_lowercase<-str_to_lower(days)
+days_lowercase
+```
+Let's try again!
+```{r}
+str_subset(days_lowercase, "m")
+```
+
+Can you detect "cell" in a piece of text?
+```{r}
+?str_detect()
+```
+
+```{r}
+str_detect("this is the text", "cell")
+```
+
+```{r}
+str_detect("this is the cell", "cell")
+```
+
+Let's use a data frame to see how these functions can be used 
+```{r}
+nobel_winners <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-05-14/nobel_winners.csv")
+```
+Who was motivated by "cell"? is it related to their category?
+```{r}
+cell<-nobel_winners %>% filter(str_detect(motivation, "cell"))
+```
+
+```{r}
+ggplot(cell, aes(category))+
+         geom_bar()
+```
+
+
+
+### Working with dates and times in R
+
+Lubridate makes it easires to work with dates and times. We need to load it
+```{r}
+library(lubridate)
+```
+
+What day is it today?
+```{r}
+today()
+```
+
+```{r}
+month(now(), label=TRUE)
+```
+```{r}
+wday(today(), label=TRUE)
+```
+
+Some data sets have dates as strings. We can turn them into dates.  Identify the order in which year, month, and day appear in those strings, then arrange “y”, “m”, and “d” in the same order. 
+```{r}
+ymd(20190618)
+```
+
+
+
+```{r}
+string<-"2019-06-18"
+```
+
+```{r}
+glimpse(string)
+```
+
+```{r}
+thisisadate<-ymd("2019-06-18")
+```
+
+```{r}
+glimpse(thisisadate)
+
+```
+
+## Math with Date-times. Lubridate provides 3 classes of timespans: Durations, Intervals, and periods
+
+1. Durations: a span of time measured in seconds. 
+
+2. Interval: it represents a starting and ending point
+
+3. Periods: they represent units like weeks, months
+
+Let's see an example
+```{r}
+start <- mdy_hm("6-16-2019 5:21", tz ="US/Eastern")
+end <- mdy_hm("6-17-2019 5:21", tz = "US/Eastern")
+
+time.interval <- start %--% end
+time.interval
+```
+
+We can create a duration between our start and end points
+```{r}
+time.duration<-as.duration(time.interval)
+time.duration
+```
+Now, we can create a Period from our interval. 
+```{r}
+time.period<-as.period(time.interval)
+time.period
+```
+
+```{r}
+time.period2<-as.period(time.interval, unit="minutes")
+time.period2
+```
+
+
+
+##Let's use the Nobel Prize Winners data to calculate a few dates 
+```{r}
+glimpse(nobel_winners)
+```
+
+How old were they when they died?
+
+
+```{r}
+nobel_winners<-nobel_winners %>% mutate(age_death_years2= (birth_date%--%death_date) /years(1))
+```
+
+```{r}
+nobel_winners<-nobel_winners %>% mutate(age_death_years2= (birth_date%--%death_date) %/% years(1))
+```
+
+
+## This week's TidyTuesday: Christmas Bird Counts
+
+bird_counts <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-06-18/bird_counts.csv")
+
+##Bike Traffic Data
+
+You can use the Bike Data to practice Dates and Times
+
+bike_traffic <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-04-02/bike_traffic.csv")
+
+
+You can try creating a new Date-Time column from the existing Date column 
+
+Create a graph displaying the number of bikes by day of the week or month of the year
+
