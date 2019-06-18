@@ -1,7 +1,7 @@
 
 # Brandeis Library SummeR of R
 
-This is the repo for the Brandeis SummeR of R series. A weekly series offerred on Tuesdays and Thursdays that will be 12-1:30 in the Vershbow classroom in Goldfarb at the Brandeis Library.
+This is the repo for the Brandeis SummeR of R series. A weekly series offerred on Tuesdays and Thursdays that will be 12-1:30 in Gerstenzang 135.
 
 Each session will start with a 30 minute tutorial and then in the following hour  you can apply what we've learned or work on your own project with R, with experienced R users around to help troubleshoot (and maybe also commiserate a little) when you get stuck! 
 
