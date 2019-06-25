@@ -6,6 +6,7 @@ output:
 ---
 ### Welcome to SummeR of R at the Brandeis Library! 
 
+
 Margarita Corral  
 
 mcorral@brandeis.edu  
@@ -76,12 +77,12 @@ print(TidyHeightWeight)
 arrange(TidyHeightWeight, Height)
 ```
 ```{r}
-arrange(TidyHeightWeight, desc(Weight), Height)
+arrange(TidyHeightWeight, desc(Weight))
 ```
-**5. mutate()**: Let's you create a new column!
+**4. mutate()**: Let's you create a new column!
 
 ```{r}
-Tidy_BMI <- mutate(TidyHeightWeight, BMI = 703*Weight/ (Height)^2)
+Tidy_BMI<-mutate(TidyHeightWeight, BMI = 703*Weight/ (Height)^2)
 print(Tidy_BMI)
 ```
 
@@ -102,8 +103,8 @@ The five main *dplyr* functions have similarities:
 **case_when()** : Lets you do different things based on a condition  
 
 ```{r}
-Tidy_BMI<-mutate(Tidy_BMI, Height_Class = case_when( Height > 65 ~ Height*2, 
-                                                     Height < 65 ~ Height/2))
+Tidy_BMI<-mutate(Tidy_BMI, Height_Class = case_when( Height > 65 ~ 'Tall', 
+                                                     Height < 65 ~ 'Short'))
 print(Tidy_BMI)
 ```
 
@@ -122,21 +123,19 @@ summary(meteorites)
 Looks like we have some bad data, the max year is 2101, I find this suspicious. I am going to filter out anything greater than the current year.  
 ```{r}
 meteorites <- filter(meteorites, year <= 2019)
-
 ```
 
 
 Let's see how many meteorites have been found vs. fell each year 
 ```{r}
 meteorite_counts <- meteorites %>% group_by(fall, year) %>% summarise(count= n())
-arrange(meteorite_counts, desc(year))
+print(meteorite_counts)
 ```
 
 So now we're considering a year an observation and we want to adjust our dataframe so that each year is on one row only.  We use the *spread()* function from *tidyr* 
 
 ```{r}
 spread_meteorite<-meteorite_counts %>% spread(key=fall, value=count)
-spread_meteorite
 ```
 
 There are a number of years where we have a meteor that fell but none that were found, spread automatically fills this with an NA but we want to just fill it with zero because given our dataframe we will assume if there is no record there is 0 found/fallen that year. We can do this by setting the fill argument to 0 inside spread.
