@@ -1,7 +1,5 @@
 ---
 title: "Statistical Models/Tests Part1"
-author: "Shannon B. Hagerty"
-date: "6/24/2019"
 output:
   pdf_document: default
   html_document: default
