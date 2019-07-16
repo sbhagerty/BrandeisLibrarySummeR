@@ -46,7 +46,7 @@ GitHub is a website that hosts your Git files. There are other options to host y
 
 ##### Introduce yourself to Git
 
-```{r eval = FALSE}
+```{r}
 install.packages('usethis')
 use_git_config(user.name= "YourGitHubUsername", user.email="YourEmail@email.com")
 ```
