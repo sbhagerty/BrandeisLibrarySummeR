@@ -14,10 +14,10 @@ Please use the registration links below to sign up. Tuesday and Thursday session
 | June 4  |  [Data visualization with ggplot](DataVisualization) |  [Tuesday Registration](https://calendar.library.brandeis.edu/event/5412567)| [Thursday Registration](https://calendar.library.brandeis.edu/event/5412578)   |
 | June 11  |  [Data wrangling: Part 1](DataWranglingPart1)  | [Tuesday Registration](https://calendar.library.brandeis.edu/event/5412568)| [Thursday Registration](https://calendar.library.brandeis.edu/event/5412579)   |
 | June 18  |  [Data wrangling: Part 2](DataWranglingPart2)    | [Tuesday Registration](https://calendar.library.brandeis.edu/event/5412569)| [Thursday Registration](https://calendar.library.brandeis.edu/event/5412580)   |
-| June 25  |  Statistical Tests/ Models: Part 1 | [Tuesday Registration](https://calendar.library.brandeis.edu/event/5412570)| [Thursday Registration](https://calendar.library.brandeis.edu/event/5412581)   |
+| June 25  |  [Statistical Tests/ Models: Part 1](StatisticalTestsPart1) | [Tuesday Registration](https://calendar.library.brandeis.edu/event/5412570)| [Thursday Registration](https://calendar.library.brandeis.edu/event/5412581)   |
 | July 2  |  No Sessions | No Session Tuesday| No Session Thursday (holiday)   |
 | July 9  |  No Tutorial | |   |
-| July 16  |  Reproducibility tips for R and Version Control with Git |  [Tuesday Registration](https://calendar.library.brandeis.edu/event/5412573)| [Thursday Registration](https://calendar.library.brandeis.edu/event/5412584)  |
+| July 16  |  Reproducibility tips for R and Version Control with Git!! |  [Tuesday Registration](https://calendar.library.brandeis.edu/event/5412573)| [Thursday Registration](https://calendar.library.brandeis.edu/event/5412584)  |
 | July 23  | Statistical Tests/Models: Part 2| [Tuesday Registration](https://calendar.library.brandeis.edu/event/5412574)| [Thursday Registration](https://calendar.library.brandeis.edu/event/5412585)   |
 | July 30  |  Simulation Modeling in R | [Tuesday Registration](https://calendar.library.brandeis.edu/event/5412575)| [Thursday Registration](https://calendar.library.brandeis.edu/event/5412586)   |
 | August 6  |  Web Scraping and Text Mining | [Tuesday Registration](https://calendar.library.brandeis.edu/event/5412576)| [Thursday Registration](https://calendar.library.brandeis.edu/event/5412587)   |
