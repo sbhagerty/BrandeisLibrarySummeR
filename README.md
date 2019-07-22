@@ -19,9 +19,9 @@ Please use the registration links below to sign up. Tuesday and Thursday session
 | July 9  |  No Tutorial | |   |
 | July 16  |  [Reproducibility tips for R and Version Control with Git](GitandGitHubInRStudio) |  [Tuesday Registration](https://calendar.library.brandeis.edu/event/5412573)| [Thursday Registration](https://calendar.library.brandeis.edu/event/5412584)  |
 | July 23  | Statistical Tests/Models: Part 2| [Tuesday Registration](https://calendar.library.brandeis.edu/event/5412574)| [Thursday Registration](https://calendar.library.brandeis.edu/event/5412585)   |
-| July 30  |  Simulation Modeling in R | [Tuesday Registration](https://calendar.library.brandeis.edu/event/5412575)| [Thursday Registration](https://calendar.library.brandeis.edu/event/5412586)   |
+| July 30  |  Programming Fundamentals in R | [Tuesday Registration](https://calendar.library.brandeis.edu/event/5412575)| [Thursday Registration](https://calendar.library.brandeis.edu/event/5412586)   |
 | August 6  |  Web Scraping and Text Mining | [Tuesday Registration](https://calendar.library.brandeis.edu/event/5412576)| [Thursday Registration](https://calendar.library.brandeis.edu/event/5412587)   |
-| August 13  |  Intro to Supervised Machine Learning in R| [Tuesday Registration](https://calendar.library.brandeis.edu/event/5412577)| [Thursday Registration](https://calendar.library.brandeis.edu/event/5412588)   |
+| August 13  |  Simulation Modeling in R| [Tuesday Registration](https://calendar.library.brandeis.edu/event/5412577)| [Thursday Registration](https://calendar.library.brandeis.edu/event/5412588)   |
 
 
 ** Tutorial topics may be adjusted based on interests of the group. All workshop material will also be posted and linked here before the weekly session.  This page will be updated to reflect any changes. 
