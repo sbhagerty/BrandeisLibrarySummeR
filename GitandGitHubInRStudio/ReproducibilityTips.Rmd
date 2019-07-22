@@ -1,0 +1,16 @@
+
+## Reproducibility Tips for R
+
+*Keep it all together*  
+
+- R scripts should contain all code
+- load all packages at the top of scripts
+- Use R projects 
+-  Start analyses with clear environments, restart R sessions (Under Session Menu -> restart R)  
+
+*Make it readable*  
+
+  - Use meaningful variable names 
+  - Document (either by commenting or in Rmarkdown) your code, explaining what and why
+  - Break Analysis into chunks with separate R files
+  - Use functions if you are repeating the same task multiple times
