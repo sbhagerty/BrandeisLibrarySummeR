@@ -1,0 +1,190 @@
+---
+title: "Statistical Models/Tests Part2"
+author: "Margarita Corral"
+date: "7/22/2019"
+output: html_document
+---
+Welcome to our second session on statistical analysis in R!  
+
+### Today we will cover:
+
+- Linear regression
+- Checking linear regression assumptions
+- Logistic regression
+
+### Set up
+To get started let's load or install the library's we'll be using. If this is your first time using one of the packages uncomment and run the appropriate install.package('package')
+```{r}
+#install.packages('tidyverse')
+library(tidyverse)
+
+install.packages("GGally")
+library(GGally)
+
+install.packages("car")
+library(car)
+
+install.packages("lmtest")
+library(lmtest)
+
+install.packages('texreg')
+library(texreg)
+
+
+```
+
+We're going to be using the "states" data set. 
+
+
+
+
+```{r}
+States <-read_csv("states.csv")
+```
+
+
+## Let's explore the data
+
+```{r}
+View(States)
+```
+
+```{r}
+summary(States)
+```
+
+
+Before fitting a model to predict price, let's take a look at our dependent variable 
+density plot
+```{r}
+States %>% 
+  ggplot(aes(cons_hr)) +
+  stat_density() + 
+  theme_bw()
+```
+
+correlation matrix
+```{r}
+ggcorr(States)
+```
+correlation matrix
+```{r}
+ggcorr(States[,3:14], label=TRUE)
+```
+
+correlation
+```{r}
+cor(States$cons_hr, States$college)
+
+```
+
+
+Univariate model
+```{r}
+model1<-lm(cons_hr ~ college, data=States)
+
+summary(model1)
+
+```
+We can use the screenreg function from texreg to get a nice table
+
+```{r}
+screenreg(model1)
+```
+
+```{r}
+screenreg(model1, 
+          custom.model.names = "Model 1",  
+          custom.coef.names = c("Constant", "% of college graduates"))
+```
+We can export the table as .doc
+```{r}
+htmlreg(list(model1), file = "model_1.doc", 
+    custom.model.names = "Model 1",  
+    custom.coef.names = c("Constant", "% of college graduates"),
+    inline.css = FALSE, doctype = TRUE, html.tag = TRUE, 
+    head.tag = TRUE, body.tag = TRUE)
+```
+
+
+
+Multivariate model
+```{r}
+model2<-lm(cons_hr ~ college+christad, data=States)
+```
+
+```{r}
+screenreg(model2)
+```
+
+Linear Regression Assumptions
+
+1. Residuals are normally distributed. The plot()funciton will give us 4 diagnostic plots
+```{r}
+res<-residuals(model2)
+res <- as.data.frame(res)
+ggplot(res,aes(res)) +  geom_histogram(fill='blue',alpha=0.5,bins=15)
+plot(model2)
+
+```
+```{r}
+shapiro.test(model2$residuals)
+
+```
+
+
+
+2. Homoscedasticity. we can check the Residuals vs fitted plot or use the Breusch-Pagan test (null hypothesis: heteroskedasticity is not present)
+```{r}
+bptest(model2)
+```
+
+3.Multicollinearity. We can use vif() to calculate the variance inflation factor. A value larger than 2.5 may be a cause for concern
+```{r}
+vif(model2)
+```
+
+Model with categorical variables
+```{r}
+model3<-lm(cons_hr ~ college+christad+region, data=States)
+summary(model3)
+```
+
+Changing the reference goup
+```{r}
+States$region<-as.factor(States$region)
+States$region<-relevel(States$region, ref="South")
+model4<-lm(cons_hr ~ college+christad+region, data=States)
+summary(model4)
+```
+Modeling interactions
+```{r}
+model5<- lm(cons_hr ~ college*region, data=States)
+summary(model5)
+```
+
+
+Logistic regression
+```{r}
+str(States$gb_win04)
+States$gb_win04<-as.factor(States$gb_win04)
+```
+
+```{r}
+model6<-glm(gb_win04~prcapinc, data=States, family=binomial)
+summary(model6)
+```
+
+
+
+
+
+
+
+[This week's TidyTuesday:R for Data Science Online Learning Community Stats]
+```{r}
+
+r4ds_members <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-07-16/r4ds_members.csv")
+
+```
+
