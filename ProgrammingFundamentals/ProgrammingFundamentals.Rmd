@@ -1,0 +1,301 @@
+---
+title: "Programming Fundamentals"
+author: "Shannon B. Hagerty"
+date: "7/29/2019"
+output: html_document
+---
+```{r}
+#install.packages('here')
+library(here)
+library(tidyverse)
+```
+
+### Data Types and Slicing
+Let's start out with just a brief overview of some of the common data types in R.  
+
+**Vectors**
+A vector is an one-dimensional ordered sequence of one type of elements (i.e. double, character, logical). We can create a vector using c()
+
+```{r}
+my_vector <- c(1,3,5)
+my_2nd_vector <- c('one', 'two', 'three')
+```
+You can confirm you are working with a vector using ```is.vector()```
+
+```{r}
+is.vector(my_vector)
+is.vector(my_2nd_vector)
+```
+We can check the length of the vector with the length function. 
+```{r}
+length(my_vector)
+```
+
+Because a vector is ordered, we can call on elements in the vector based on its position. The first element in the vector is a position one.We use [] to index 
+```{r}
+my_vector[1]
+my_2nd_vector[3]
+```
+*Tip: when you want to get one single thing out of a vector its actually best to use [[1]], this seems to matter most when you have more complex structuring (like a vector in a vector) but its best practice to do it always
+
+You can use indexing to grab more than one thing from a list to, by specifying a range using a colon, 2:5 will take the second ,third, fourth, fifth elements in the vector. 
+```{r}
+another_vector <- c(200, 400, 600, 300, 210,111,203,556)
+another_vector[2:5]
+```
+You can also add elements to the list
+```{r}
+alonger_vector <- c(another_vector, 1)
+alonger_vector[9]
+```
+You can change an element with indexing too. 
+```{r}
+alonger_vector[[1]]<-9999
+alonger_vector
+```
+Vectors have to have the same element type.  If you give it different types it will force the type to be the same.
+
+```{r}
+my_stuff<-c('one', 1, 'two', 2, TRUE)
+typeof(my_stuff)
+my_stuff
+```
+**Lists**
+If you want to combine different kinds of data, you need to use a list. 
+```{r}
+my_list <- list(3,'three', TRUE)
+my_list
+```
+You can check that you have a list. 
+
+```{r}
+typeof(my_list)
+is.list(my_list)
+```
+You can index lists using positions similarly to vectors. With lists its more important to use double brackets when you want to access a single thing.   
+```{r}
+my_list[[1]]
+my_list[1]
+```
+```{r}
+my_list[3:4]<-'go'
+my_list
+```
+You can add to lists. 
+```{r}
+my_list[5]<-'anotherThing'
+my_list
+```
+
+**Dataframes**
+Dataframes have rows and columns where each each column is a vector with an equal number of rows.  
+
+```{r}
+col1<-c(1,2,3,4)
+col2<-c('duck','duck','duck','goose')
+col3<-c(T, T, F, T)
+my_df<-data.frame(col1, col2, col3)
+my_df
+```
+We can work with each columns as a vector using the dataframe_name$column_name notation
+```{r}
+my_df$col1
+```
+We can index inside the vector too. 
+```{r}
+my_df$col1[[2]]
+```
+Another way to do that is using the [row, column] notation. So to get the value in row 1 column 1 we would have [1,1]
+```{r}
+my_df[1,1]
+```
+If you want all of the columns for a certain row you add the comma and leave after the comma blank
+```{r}
+my_df[1,]
+```
+To index columns in full you can similarly
+```{r}
+my_df[,1]
+```
+Although because a dataframe is just a list of vectors (where the vectors are the columns) You can also directly call the column like so:
+```{r}
+my_df[1]
+#note the difference 
+my_df[[1]]
+#by the name of the column
+my_df['col1']
+```
+You can create a new column like so:
+```{r}
+my_df$col4 <- my_df$col1 + 100
+my_df
+```
+
+
+**TRY IT**
+We'll use the iris dataframe that comes loaded with R
+```{r}
+glimpse(iris)
+```
+Try to come up with at least two ways to slice just the Petal.Width column
+```{r}
+
+```
+Get the value for the Petal.Length at row 12
+```{r}
+
+```
+Can you take a slice that includes rows 1 to 10 and the columns Petal.Length and Petal.Width
+```{r}
+
+```
+If we want to approximate petal area (badly) we may want to multiply petal length by width. Create a new Petal.Area column from the length and width columns. 
+
+```{r}
+
+```
+
+### Write a function
+If you find you're doing the same task over and over... make it a function. We'll start out with a simple function. 
+
+We first assign our function to a variable name.  Then we use function() and { }. Inside the curly brackets we put the action we want the function to perform when called. We're just going to have the function pring 'Hello World' when we call it. 
+```{r}
+hello_world<-function(){
+print('Hello World')
+}
+```
+Now we can call our function by typing the name we assigned it to followed by parentheses.  
+```{r}
+hello_world()
+```
+We can make our function more flexible with arguments. Arguments are the inputs to our function.  We'll use the argument name so that now whatever string input goes into our function the function will print Hello + our input 
+
+```{r}
+hello_you<-function(name){
+print(paste('Hello', name))
+}
+```
+An example
+```{r}
+hello_you('Shannon')
+```
+We can set defaults to our arguments below. 
+```{r}
+hello_world<-function(name='World'){
+print(paste('Hello', name))
+}
+```
+When we set a default the function will use that if no other input for the argument is supplied. But when we do supply an input the argument takes on that value. 
+```{r}
+hello_world()
+hello_world('Margarita')
+```
+Most of the time you'll want your functions to do more than print something as the action, you'll want to get something back (i.e. a value, dataframe, list, string). When you want to get a value you back you add return() and put the object you want returned in side the parentheses. Below our funciton will return a new value, the temperature in celsius. 
+```{r}
+F_to_C <- function(Farenheit){
+  celsius = (Farenheit - 32) * (5/9)
+  return(celsius)
+}
+```
+When we call our function, we'll want to assign the output to a variable so we can use the output of our function later, otherwise the function will print hte output but not store it. 
+```{r}
+C<-F_to_C(32)
+C
+```
+**TRY IT**
+Can you write a function that takes two arguments x and y, then returns the value of x to the power of y. 
+```{r}
+
+```
+Can you write a function that takes a value in Farenheit and converts it to Kelvin. Kelvin is equivalent to  degrees Celsius + 273.15
+```{r}
+
+```
+
+### Write a for loop
+A for loop will iterate over a list/vector of elements and perform some actions on that list.  
+
+we use the for() to start the loop.  Inside the loop we define the number of iterations and what we want to call a thing in a single iteration.  In the example i below is going to take on a value *in* our range of  1: the length of our list of names (i.e. 3). So, i will be 1, then when the action inside the curly brackets is completed using i=1, the action will be performed for i=2, and then again for i=3. You can change the range to anything 2:3 or 1:3, but right now its set so if we change hte length of names the for loop will still loop over the full vector. 
+
+```{r}
+names<-c('Shannon', 'Margarita', 'World')
+for( i in 1:length(names)){
+  print(i)
+  hello_world(names[i])
+}
+```
+**TRY IT**
+Write a function that prints each list of Farenheit temperatures in the vector temp_list into Celsius, you can use the function we made earlier. 
+```{r}
+
+```
+Now try to put the for loop in a function so we can give it any size list of temperatures and it will give us the celsius values. Try out the functions with vectors of temperature values to be sure it works.
+```{r}
+
+```
+**Example with dataframe building**
+```{r}
+temp<- c(92, 90, 89, 80, 84)
+
+weekly_temps<- function(temps){
+  #create an empty dataframe to store our temp data
+  df <- data.frame()
+  #name the columns
+  for(i in 1:length(temps)){
+    df[i,1] <- temps[i]
+    df[i,2] <-F_to_C(temps[i])
+    df[i,3] <- F_to_K(temps[i])
+  }
+  names(df)<-c('Farenheit', 'Celsius', 'Kelvin')
+  return(df)
+}
+```
+
+
+### Practice example
+
+So in this example we have air quality metrics from the EPA measured across multiple counties in every state. For my analysis I want to do a few things to this dataframe. I ultimately want to go from a dataframe with measurements across multiple counties per state to an average for each state.   
+
+```{r}
+air_quality<- read_csv(here('Programming','data', 'annual_aqi_by_county_2014.csv'))
+```
+
+
+1. Slice the dataframe to just the first 10 columns.
+
+```{r}
+air_quality<-air_quality[1:10]
+```
+
+
+2. Rename these columns so there isn't a space in the columns. You can use the rename function in dplyr or the names function in base R (you may want to use ??funcion_name to look up the documentation). 
+```{r}
+
+```
+
+3. Create a summary dataframe with the average of the number of days in each air quality ranking (e.g. Good, Moderate, Unhealth) across all the counties for each state.
+```{r}
+
+```
+
+**IT GETS A LITTLE MORE COMPLICATED** 
+So this dataframe we just worked with is actually just for 2014, but we have data from 2014 to 2019.  Create a function that will take a df and do all three steps returning the summary table.  This way we can just use the function on all the datasets. 
+```{r}
+
+```
+Okay now we have a list of our files in the list files. Can you take that list and loop thru it, reading in each file as a df, then using the function you made to generate a summary table.  
+```{r}
+files<- list.files(here('Programming', 'data'))
+
+##Loop thru files using function
+
+##HINT
+#from the stringr package: take the file name dropping the .csv extension 
+name<- str_sub(files[1], end=-5) 
+# where df is a temporary df (i.e. your summary df) this function reassigns that df to the name that is specific to the file you are looping it.  
+assign(name, df)
+# You should have 9 summary df in the end
+```
+
+
+
