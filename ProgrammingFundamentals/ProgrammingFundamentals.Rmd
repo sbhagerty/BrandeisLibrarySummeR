@@ -257,7 +257,7 @@ weekly_temps<- function(temps){
 So in this example we have air quality metrics from the EPA measured across multiple counties in every state. For my analysis I want to do a few things to this dataframe. I ultimately want to go from a dataframe with measurements across multiple counties per state to an average for each state.   
 
 ```{r}
-air_quality<- read_csv(here('Programming','data', 'annual_aqi_by_county_2014.csv'))
+air_quality<- read_csv(here('ProgrammingFundamentals','data', 'annual_aqi_by_county_2014.csv'))
 ```
 
 
