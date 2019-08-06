@@ -1,0 +1,261 @@
+---
+title: "Web Scraping & Text Mining"
+author: "Margarita Corral"
+date: "8/5/2019"
+output: html_document
+---
+
+
+
+## Web Scraping
+
+Web scraping is the process of extracting data from websites. This process will allow us to transform unstructured data into a local database or spreadsheet, making their analysis and visualization easier (Olgun 2018).
+
+There are many R packages available to access data from web pages. In this session we will use the rvest package which is also part of the tidyverse <http://rvest.tidyverse.org/>
+
+Another way to extract data from websites is using APIs (Application Programming Interfaces) that some websites provide (e.g. Twitter, YouTube, Library of Congress, Citizen Science). <https://www.programmableweb.com/apis>
+APIs are "intermediaries" that allow one software to talk to another. Keep in mind that most APIs have limited usage policies. We will use the New York Times API to extract data.
+
+```{r }
+#Installing the web scraping package rvest
+install.packages("rvest")
+library(rvest)
+```
+
+
+We are going to scrape the IMDB website for the 50 most popular movies in 2019
+
+<https://www.imdb.com/search/title/?year=2019&title_type=feature&>
+
+
+Reading the HTML code from the website to be scraped
+```{r}
+webpage <- read_html("https://www.imdb.com/search/title/?year=2019&title_type=feature&")
+```
+
+We are going to use SelectorGadget to extract desired parts of the page
+https://cran.r-project.org/web/packages/rvest/vignettes/selectorgadget.html
+
+We start scraping the rankings section
+```{r}
+rank_html <- html_nodes (webpage, ".text-primary")
+```
+convert the ranking data to text
+```{r}
+rank_data <- html_text(rank_html)
+```
+
+explore my data
+```{r}
+head(rank_data)
+```
+We see these are characters. I am going to convert them to numerical
+```{r}
+rank_data<-as.numeric(rank_data)
+```
+
+Extracting titles
+```{r}
+title_html <- html_nodes(webpage,'.lister-item-header a')
+
+title_data <- html_text(title_html)
+
+head(title_data)
+```
+
+Extracting genre
+
+```{r}
+genre_html <- html_nodes(webpage,'.genre')
+genre_data <- html_text(genre_html)
+head(genre_data)
+
+```
+Removing \n
+```{r}
+genre_data<-gsub("\n", "", genre_data)
+genre_data
+```
+Removing trailing spaces
+```{r}
+library(stringr)
+genre_data<-str_trim(genre_data)
+genre_data
+```
+Geting only the first genre
+```{r}
+genre_data<-gsub(",.*","",genre_data)
+genre_data
+```
+
+Combining the data frames
+```{r}
+movies <-data.frame(Rank=rank_data, Title=title_data, Genre=genre_data)
+```
+Let's check our data frame
+```{r}
+View(movies)
+```
+
+##Can you plot a bar graph for genre?
+```{r}
+library(tidyverse)
+
+```
+
+
+##Using APIs
+You will need to sign up for an API key (https://developer.nytimes.com/accounts/create), and save it in a file.
+
+nytkey="paste_your_api_key_here"
+
+
+jsonlite is a package for interacting with the NYT API. We will use this package plus the tidyverse to convert from JSON to data frame.
+```{r}
+install.packages("jsonlite")
+library(jsonlite)
+```
+
+
+We need a function that searches NYT articles. We will use the function written by Vincentwx
+https://rstudio-pubs-static.s3.amazonaws.com/461075_e078fb9f08d44976893c899dc0a74374.html
+```{r}
+
+nytimes <- function (keyword,year) {
+  searchQ = URLencode(keyword)
+  url = paste('http://api.nytimes.com/svc/search/v2/articlesearch.json?q=',searchQ,
+              '&begin_date=',year,'0101&end_date=',year,'1231&api-key=',nytkey,sep="")
+  #this API only gives 10 articles at a time, we need to calculate how many pages there are with articles mentioning our term to get them all at once
+  initialsearch = fromJSON(url,flatten = T)
+  maxPages = round((initialsearch$response$meta$hits / 10)-1)
+  
+  #try with the max page limit at 10
+  maxPages = ifelse(maxPages >= 10, 10, maxPages)
+  
+  #create an empty data frame
+  df = data.frame(id=as.numeric(),created_time=character(),snippet=character(),
+                  headline=character())
+  
+  #save search results into data frame
+  for(i in 0:maxPages){
+    #get the search results of each page
+    nytSearch = fromJSON(paste0(url, "&page=", i), flatten = T) 
+    temp = data.frame(id=1:nrow(nytSearch$response$docs),
+                      created_time = nytSearch$response$docs$pub_date,
+                      snippet = nytSearch$response$docs$snippet,
+                      headline = nytSearch$response$docs$headline.main)
+    df=rbind(df,temp)
+    Sys.sleep(5) #sleep for 5 second
+  }
+  return(df)
+}
+
+```
+Now, we aply our function to our search
+```{r}
+climate_change<-nytimes("climate change", 2019)
+```
+
+We can create a csv file with our results
+```{r}
+write.csv(climate_change, "climate_change.csv")
+```
+
+If you do not have your API you can open the csv file
+```{r}
+climate_change<-read_csv("climate_change.csv",header=T)
+```
+
+
+##Text Mining
+We will use the tidytext package to do a little bit of text mining using the data we got from the NYT. Tidy text format is a table with one token per row. A token is a "meaningful unit of text, such a word, that we are interested in using for analyis" (Silge and Robinson, 2017:1)
+
+We will be working with just headlines
+```{r}
+climate_change_headlines<-select(climate_change, headline)
+```
+
+Let's tidy our data
+```{r}
+install.packages("tidytext")
+library(tidytext)
+climate_change_headlines$headline<-as.character(climate_change_headlines$headline)
+tidy_climate_change<-climate_change_headlines %>%
+  unnest_tokens(word, headline)
+```
+
+Word frequencies
+```{r}
+tidy_climate_change %>%
+  anti_join(stop_words)%>%
+  count(word, sort = TRUE)
+```
+
+Word Cloud
+```{r}
+install.packages("wordcloud")
+library(wordcloud)
+tidy_climate_change %>%
+  anti_join(stop_words) %>%
+  count(word) %>%
+  with(wordcloud(word, n, max.words = 50))
+```
+
+
+Sentiment Analysis. The three general-purpose lexicons are
+AFINN, bing, and nrc
+```{r}
+get_sentiments("bing")
+```
+
+```{r}
+headlines_sentiment<-tidy_climate_change%>%
+  inner_join(get_sentiments("bing"))%>%
+  count(word, sentiment)%>%
+  spread(sentiment, n, fill=0)%>%
+  mutate(sentiment=positive-negative)
+```
+
+```{r}
+ggplot(headlines_sentiment,aes(sentiment)) + geom_bar(stat="count",width=0.7, fill="steelblue")+
+  theme_minimal()
+```
+
+Tokenizing by N-gram
+```{r}
+
+tidy_bigram<-climate_change_headlines %>%
+  unnest_tokens(bigram, headline, token="ngrams", n=2)
+
+tidy_bigram
+```
+
+Counting N-grams
+```{r}
+tidy_bigram%>%
+  count(bigram, sort=TRUE)
+```
+
+
+#You can try analyzing the snippets from the climate_change data
+
+
+## Some Resources
+
+Olgun Aydin. (2018). R Web Scraping Quick Start Guide. Packt Publishing.
+https://search.library.brandeis.edu/permalink/f/1skfba6/TN_sbo_s9781789138733
+
+Silge, J., & Robinson, David. (2017). Text mining with R : A tidy approach (First ed.).
+https://search.library.brandeis.edu/permalink/f/urfvar/BRAND_ALMA21366278860001921
+
+
+https://rpubs.com/hmgeiger/373949
+
+http://www.storybench.org/working-with-the-new-york-times-api-in-r/
+
+http://pablobarbera.com/big-data-upf/html/01c-apis.html
+
+https://www.r-bloggers.com/new-york-times-article-search-api-to-mongodb/
+
+https://www.r-bloggers.com/collecting-and-analyzing-twitter-data-using-r/
+
